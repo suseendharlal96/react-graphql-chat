@@ -6,6 +6,22 @@ module.exports = gql`
     email: String!
     token: String!
   }
+  type MyUser {
+    username: String!
+    mycompany: [Company]!
+  }
+  type Company {
+    sname: String!
+    usernamez:String!
+    myhome: Home!
+  }
+  type Home {
+    name: String!
+    myfactory: Factory!
+  }
+  type Factory {
+    name: String!
+  }
   input SignupData {
     username: String!
     email: String!
@@ -15,7 +31,8 @@ module.exports = gql`
 
   type Query {
     getUsers: [User]!
-    getUser(username: String!): User!
+    getMyUsers: [MyUser]!
+    getMyUser(username: String!): MyUser!
   }
 
   type Mutation {

@@ -24,6 +24,13 @@ const generateToken = (user) => {
   );
 };
 
+const myusers = [{ username: "sus" }, { username: "sug" }];
+
+const company = [
+  { username: "sus", sname: "1" },
+  { username: "sus", sname: "2" },
+  { username: "sug", sname: "3" },
+];
 module.exports = {
   Query: {
     getUsers: async (_, args, context) => {
@@ -36,8 +43,45 @@ module.exports = {
         throw new Error(err);
       }
     },
-    getUser: (_, { name }) => users.find((u) => u.name === name),
+    getMyUsers: () => {
+      console.log(1);
+      return myusers;
+    },
+    getMyUser: (_, { username }) => {
+      return myusers.find((u) => u.username === username);
+    },
   },
+  MyUser: {
+    mycompany(parent) {
+      console.log(2, parent);
+      const a = company.filter((c) => c.username === parent.username);
+      console.log("a", a);
+      const c = {};
+      a.forEach((obj) => {
+        c.usernamez = obj.username;
+        c.sname = obj.sname;
+      });
+      return [c];
+    },
+  },
+  Company: {
+    myhome(parent) {
+      console.log(3, parent);
+      return {
+        name: "dsfds",
+      };
+    },
+  },
+  Home: {
+    myfactory(parent) {
+      console.log(4, parent);
+      return {
+        name: "adsf",
+      };
+      // return company.find((c) => c.username === parent.username);
+    },
+  },
+
   Mutation: {
     signin: async (_, { email, password }) => {
       try {
