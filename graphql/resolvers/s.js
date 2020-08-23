@@ -13,17 +13,17 @@ const libraries = [
 const books = [
   {
     title: "Harry Potter and the Chamber of Secrets",
-    sauthor: "J.K. Rowling",
+    author: "J.K. Rowling",
     branch: "riverside",
   },
   {
     title: "Spiderman",
-    sauthor: "Peter Parker",
+    author: "Peter Parker",
     branch: "riverside",
   },
   {
     title: "Jurassic Park",
-    sauthor: "Michael Crichton",
+    author: "Michael Crichton",
     branch: "downtown",
   },
 ];
@@ -43,7 +43,8 @@ const typeDefs = gql`
 
   # An author has a name
   type Author {
-    sauthor: String!
+    author: String!
+    authorBooks: [Book]
   }
 
   # Queries can fetch a list of libraries
@@ -75,8 +76,13 @@ const resolvers = {
     myauthor(parent) {
       console.log(2, parent);
       const a = books.filter((book) => book.title === parent.title);
-      console.log('a',a);
       return a;
+    },
+  },
+  Author: {
+    authorBooks(parent) {
+      console.log(3, parent);
+      return books.filter((book) => book.title === parent.title);
     },
   },
 

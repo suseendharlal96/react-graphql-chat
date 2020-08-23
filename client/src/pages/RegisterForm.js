@@ -4,7 +4,7 @@ import { gql, useMutation, useLazyQuery } from "@apollo/client";
 import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 
 const RegisterForm = (props) => {
-  const [form, setform] = useState({
+  const [form, setformData] = useState({
     email: "",
     username: "",
     password: "",
@@ -38,7 +38,7 @@ const RegisterForm = (props) => {
   });
 
   const handleChange = (e) => {
-    setform({ ...form, [e.target.name]: e.target.value });
+    setformData({ ...form, [e.target.name]: e.target.value });
   };
 
   const switchMode = () => {
@@ -195,6 +195,14 @@ const RegisterForm = (props) => {
   );
 };
 
+const authFragment = gql`
+  # this type 'User' comes from graphql typeDef
+  fragment authData on User {
+    username
+    token
+  }
+`;
+
 const REGISTER_USER = gql`
   mutation suseesignup(
     $username: String!
@@ -210,20 +218,19 @@ const REGISTER_USER = gql`
         confirmPassword: $confirmPassword
       }
     ) {
-      username
-      email
-      token
+      ...authData
     }
   }
+  ${authFragment}
 `;
 
 const LOGIN_USER = gql`
   query suseelogin($email: String!, $password: String!) {
     signin(email: $email, password: $password) {
-      email
-      token
+      ...authData
     }
   }
+  ${authFragment}
 `;
 
 export default RegisterForm;
