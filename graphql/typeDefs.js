@@ -12,7 +12,7 @@ module.exports = gql`
   }
   type Company {
     sname: String!
-    usernamez:String!
+    usernamez: String!
     myhome: Home!
   }
   type Home {
@@ -33,10 +33,10 @@ module.exports = gql`
     getUsers: [User]!
     getMyUsers: [MyUser]!
     getMyUser(username: String!): MyUser!
+    signin(email: String!, password: String!): User!
   }
 
   type Mutation {
     signup(signupInput: SignupData): User!
-    signin(email: String!, password: String!): User!
   }
 `;

@@ -37,52 +37,11 @@ module.exports = {
       try {
         const loggedUser = auth(context);
         const users = await User.find({ email: { $ne: loggedUser.email } });
-        console.log(users.length);
         return users;
       } catch (err) {
         throw new Error(err);
       }
     },
-    getMyUsers: () => {
-      console.log(1);
-      return myusers;
-    },
-    getMyUser: (_, { username }) => {
-      return myusers.find((u) => u.username === username);
-    },
-  },
-  MyUser: {
-    mycompany(parent) {
-      console.log(2, parent);
-      const a = company.filter((c) => c.username === parent.username);
-      console.log("a", a);
-      const c = {};
-      a.forEach((obj) => {
-        c.usernamez = obj.username;
-        c.sname = obj.sname;
-      });
-      return [c];
-    },
-  },
-  Company: {
-    myhome(parent) {
-      console.log(3, parent);
-      return {
-        name: "dsfds",
-      };
-    },
-  },
-  Home: {
-    myfactory(parent) {
-      console.log(4, parent);
-      return {
-        name: "adsf",
-      };
-      // return company.find((c) => c.username === parent.username);
-    },
-  },
-
-  Mutation: {
     signin: async (_, { email, password }) => {
       const { errors, isValid } = validateSigninInput(email, password);
       console.log(errors, isValid);
@@ -111,6 +70,41 @@ module.exports = {
         token,
       };
     },
+    getMyUsers: () => {
+      return myusers;
+    },
+    getMyUser: (_, { username }) => {
+      return myusers.find((u) => u.username === username);
+    },
+  },
+  MyUser: {
+    mycompany(parent) {
+      const a = company.filter((c) => c.username === parent.username);
+      const c = {};
+      a.forEach((obj) => {
+        c.usernamez = obj.username;
+        c.sname = obj.sname;
+      });
+      return [c];
+    },
+  },
+  Company: {
+    myhome(parent) {
+      return {
+        name: "dsfds",
+      };
+    },
+  },
+  Home: {
+    myfactory(parent) {
+      return {
+        name: "adsf",
+      };
+      // return company.find((c) => c.username === parent.username);
+    },
+  },
+
+  Mutation: {
     signup: async (
       _,
       { signupInput: { username, email, password, confirmPassword } }
@@ -121,7 +115,6 @@ module.exports = {
         password,
         confirmPassword
       );
-      console.log(errors, isValid);
       if (!isValid) {
         throw new UserInputError("errors", { errors });
       }
