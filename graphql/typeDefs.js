@@ -26,7 +26,7 @@ module.exports = gql`
     username: String!
     email: String!
     password: String!
-    confirmpassword: String!
+    confirmPassword: String!
   }
 
   type Query {

@@ -113,13 +113,13 @@ module.exports = {
     },
     signup: async (
       _,
-      { signupInput: { username, email, password, confirmpassword } }
+      { signupInput: { username, email, password, confirmPassword } }
     ) => {
       const { errors, isValid } = validateSignupInput(
         username,
         email,
         password,
-        confirmpassword
+        confirmPassword
       );
       console.log(errors, isValid);
       if (!isValid) {
