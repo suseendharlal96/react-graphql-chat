@@ -61,7 +61,7 @@ const RegisterForm = (props) => {
   };
 
   return (
-    <Row className="justify-content-center py-8">
+    <Row className="py-5 justify-content-center">
       <Col sm={8} md={6} lg={4}>
         <h2 className="text-center text-white">
           {isSignup ? "Register" : "Login"}
@@ -155,6 +155,7 @@ const RegisterForm = (props) => {
                 <Button
                   variant="primary"
                   onClick={switchMode}
+                  style={{ whiteSpace: "nowrap" }}
                   disabled={loading || loginLoading}
                 >
                   {isSignup ? "Switch to Login" : "Switch to Register"}
