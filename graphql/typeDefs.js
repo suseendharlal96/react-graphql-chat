@@ -6,6 +6,13 @@ module.exports = gql`
     email: String!
     token: String!
   }
+  type Message {
+    uuid: String!
+    content: String!
+    to: String!
+    from: String!
+    createdAt: String!
+  }
   type MyUser {
     username: String!
     mycompany: [Company]!
@@ -34,9 +41,11 @@ module.exports = gql`
     getMyUsers: [MyUser]!
     getMyUser(username: String!): MyUser!
     signin(email: String!, password: String!): User!
+    getMessages(from: String!): [Message]!
   }
 
   type Mutation {
     signup(signupInput: SignupData): User!
+    sendMessage(content: String!, to: String!): Message!
   }
 `;

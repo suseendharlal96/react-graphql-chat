@@ -1,8 +1,9 @@
 const userResolver = require("./users");
-
+const messageResolver = require("./message");
 module.exports = {
   Query: {
     ...userResolver.Query,
+    ...messageResolver.Query,
   },
   MyUser: {
     ...userResolver.MyUser,
@@ -15,5 +16,6 @@ module.exports = {
   },
   Mutation: {
     ...userResolver.Mutation,
+    ...messageResolver.Mutation,
   },
 };

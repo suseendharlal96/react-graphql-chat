@@ -33,7 +33,7 @@ const company = [
 ];
 module.exports = {
   Query: {
-    getUsers: async (_, args, context) => {
+    getUsers: async (_, __, context) => {
       try {
         const loggedUser = auth(context);
         const users = await User.find({ email: { $ne: loggedUser.email } });
