@@ -25,6 +25,12 @@ module.exports = {
       return messages;
     },
   },
+  Message: {
+    createdAt: (parent) => {
+      console.log(parent);
+      return new Date(parent.createdAt).toISOString();
+    },
+  },
   Mutation: {
     sendMessage: async (_, { content, to }, context) => {
       const loggedUser = auth(context);

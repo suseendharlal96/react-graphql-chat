@@ -8,6 +8,9 @@ module.exports = {
   MyUser: {
     ...userResolver.MyUser,
   },
+  Message: {
+    ...messageResolver.Message,
+  },
   Company: {
     ...userResolver.Company,
   },
