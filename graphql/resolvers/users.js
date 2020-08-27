@@ -60,7 +60,7 @@ module.exports = {
       if (!isPassmatch) {
         throw new UserInputError("pass doesn't match", {
           errors: {
-            email: "Invalid credentials",
+            password: "Invalid credentials",
           },
         });
       }

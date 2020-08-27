@@ -11,12 +11,11 @@ const NavBar = (props) => {
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
-    props.history.replace("/auth");
   };
   return (
     <Navbar bg="primary" variant="dark">
       <Navbar.Brand>
-        <Link to={user && user.username ? "/home" : "/auth"}>
+        <Link to={user && user.username ? "/" : "/auth"}>
           <Button>Home</Button>
         </Link>
       </Navbar.Brand>

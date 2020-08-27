@@ -24,7 +24,7 @@ const RegisterForm = (props) => {
     update(_, result) {
       console.log(result);
       dispatch({ type: "SIGNUP", userData: result.data.signup });
-      props.history.push("/home");
+      props.history.push("/");
     },
     onError(err) {
       console.log(err.graphQLErrors[0].extensions.errors);
@@ -35,13 +35,11 @@ const RegisterForm = (props) => {
   const [suseeLogin, { loading: loginLoading }] = useLazyQuery(LOGIN_USER, {
     onCompleted(data) {
       dispatch({ type: "LOGIN", userData: data.signin });
-      props.history.push("/home");
+      props.history.push("/");
     },
     onError(err) {
-      console.log(
-        err.graphQLErrors[0] && err.graphQLErrors[0].extensions.errors
-      );
-      setErrors(err.graphQLErrors[0] && err.graphQLErrors[0].extensions.errors);
+      console.log(err.graphQLErrors[0].extensions.errors);
+      setErrors(err.graphQLErrors[0].extensions.errors);
     },
   });
 

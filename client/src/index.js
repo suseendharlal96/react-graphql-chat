@@ -5,7 +5,10 @@ import ApolloProvider from "./ApolloProvider";
 
 ReactDOM.render(
   <React.StrictMode>
+    <ApolloProvider>
+
     <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
