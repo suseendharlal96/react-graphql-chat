@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { gql, useMutation, useLazyQuery } from "@apollo/client";
 import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 
+import { userFragment } from "../util/userFragment";
+import { useAuthDispatch } from "../context/authcontext";
+
 const RegisterForm = (props) => {
   const [form, setformData] = useState({
     email: "",
@@ -15,10 +18,13 @@ const RegisterForm = (props) => {
 
   const [errors, setErrors] = useState({});
 
+  const dispatch = useAuthDispatch();
+
   const [suseeRegister, { loading }] = useMutation(REGISTER_USER, {
     update(_, result) {
       console.log(result);
-      props.history.push("/");
+      dispatch({ type: "SIGNUP", userData: result.data.signup });
+      props.history.push("/home");
     },
     onError(err) {
       console.log(err.graphQLErrors[0].extensions.errors);
@@ -28,12 +34,14 @@ const RegisterForm = (props) => {
 
   const [suseeLogin, { loading: loginLoading }] = useLazyQuery(LOGIN_USER, {
     onCompleted(data) {
-      localStorage.setItem("token", data.signin.token);
-      props.history.push("/");
+      dispatch({ type: "LOGIN", userData: data.signin });
+      props.history.push("/home");
     },
     onError(err) {
-      console.log(err.graphQLErrors[0].extensions.errors);
-      setErrors(err.graphQLErrors[0].extensions.errors);
+      console.log(
+        err.graphQLErrors[0] && err.graphQLErrors[0].extensions.errors
+      );
+      setErrors(err.graphQLErrors[0] && err.graphQLErrors[0].extensions.errors);
     },
   });
 
@@ -195,13 +203,14 @@ const RegisterForm = (props) => {
   );
 };
 
-const authFragment = gql`
-  # this type 'User' comes from graphql typeDef
-  fragment authData on User {
-    username
-    token
-  }
-`;
+// const userFragment = gql`
+//   # this type 'User' comes from graphql typeDef
+//   fragment userData on User {
+//     username
+//     token
+//     email
+//   }
+// `;
 
 const REGISTER_USER = gql`
   mutation suseesignup(
@@ -218,19 +227,19 @@ const REGISTER_USER = gql`
         confirmPassword: $confirmPassword
       }
     ) {
-      ...authData
+      ...userData
     }
   }
-  ${authFragment}
+  ${userFragment}
 `;
 
 const LOGIN_USER = gql`
   query suseelogin($email: String!, $password: String!) {
     signin(email: $email, password: $password) {
-      ...authData
+      ...userData
     }
   }
-  ${authFragment}
+  ${userFragment}
 `;
 
 export default RegisterForm;
