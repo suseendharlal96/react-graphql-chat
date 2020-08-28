@@ -18,6 +18,9 @@ const NavBar = (props) => {
         <Link to={user && user.username ? "/" : "/auth"}>
           <Button>Home</Button>
         </Link>
+        <Link to="/songs">
+          <Button>Songs</Button>
+        </Link>
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content-end">
