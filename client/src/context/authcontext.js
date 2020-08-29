@@ -20,10 +20,15 @@ const authReducer = (state, action) => {
         user: action.userData,
       };
     case "LOGOUT":
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       return {
         ...state,
         user: null,
+      };
+    case "HOMEPAGELOADED":
+      return {
+        ...state,
+        isLoaded: action.isLoaded,
       };
     default:
       return state;
@@ -31,7 +36,10 @@ const authReducer = (state, action) => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, { user: null });
+  const [state, dispatch] = useReducer(authReducer, {
+    user: null,
+    isLoaded: false,
+  });
   return (
     <AuthDispatchContext.Provider value={dispatch}>
       <AuthStateContext.Provider value={state}>

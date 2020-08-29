@@ -4,7 +4,7 @@ const Lyric = require("../../models/lyric");
 module.exports = {
   Query: {
     songs: async () => {
-      return await Song.find({});
+      return await Song.find({}).sort({ title: "desc" });
     },
     song: async (parent, { id }) => {
       return await Song.findById(id);

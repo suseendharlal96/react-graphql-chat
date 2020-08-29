@@ -6,6 +6,7 @@ import { gql, useQuery } from "@apollo/client";
 import { Card, ListGroup, Button } from "react-bootstrap";
 
 import { slugify } from "../util/slugify";
+import { GET_SONG_LIST } from "../util/songsQuery";
 
 const SongList = (props) => {
   const { data, loading } = useQuery(GET_SONG_LIST);
@@ -17,6 +18,9 @@ const SongList = (props) => {
     <div className="py-5">
       {!loading ? (
         <Card>
+          <Button as={Link} to="/song/create">
+            Create a song
+          </Button>
           <ListGroup variant="flush">
             {data.songs.map((song) => (
               <React.Fragment key={song.id}>
@@ -31,19 +35,10 @@ const SongList = (props) => {
           </ListGroup>
         </Card>
       ) : (
-        <p>Loading..</p>
+        <p className="text-white">Loading..</p>
       )}
     </div>
   );
 };
-
-const GET_SONG_LIST = gql`
-  query getSongs {
-    songs {
-      id
-      title
-    }
-  }
-`;
 
 export default SongList;

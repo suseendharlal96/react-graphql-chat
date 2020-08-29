@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, NetworkStatus } from "@apollo/client";
 
 import { Row, Col } from "react-bootstrap";
 
-import { useAuthState } from "../context/authcontext";
+import { useAuthState, useAuthDispatch } from "../context/authcontext";
 
 const Home = () => {
-  const { user } = useAuthState();
+  const { user, isLoaded } = useAuthState();
+  const dispatch = useAuthDispatch();
+  useEffect(() => {
+    dispatch({ type: "HOMEPAGELOADED", isLoaded: true });
+    if (isLoaded) {
+      refetch();
+    }
+  }, []);
 
-  const { loading, data, error } = useQuery(GET_USERS);
+  const { loading, data, error, refetch, networkStatus } = useQuery(GET_USERS);
 
   if (data) {
     console.log(data);
@@ -20,7 +27,7 @@ const Home = () => {
   }
 
   let userContent;
-  if (!data || loading) {
+  if (!data || loading || networkStatus === NetworkStatus.refetch) {
     userContent = <p>Loading..</p>;
   } else if (data.getUsers.length === 0) {
     userContent = <p>No users have joined yet..</p>;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { gql, useQuery } from "@apollo/client";
 
@@ -8,6 +8,13 @@ import Music from "../assets/music.jpg";
 
 const SongDetail = (props) => {
   const [lyrics, setLyrics] = useState("");
+
+  useEffect(() => {
+    console.log(props);
+    if (!props.location.state.id) {
+      props.history.push("/songs");
+    }
+  }, [props]);
 
   const { data, loading } = useQuery(SONG_DETAIL, {
     variables: { id: props.location.state.id },
@@ -42,7 +49,7 @@ const SongDetail = (props) => {
       </Card.Body>
     </Card>
   ) : (
-    <p>Loading..</p>
+    <p className="text-white">Loading..</p>
   );
 };
 
