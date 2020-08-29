@@ -20,7 +20,7 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <Route path="/" component={NavBar} />
-        <Container>
+        <Container style={{ marginTop: "2rem" }}>
           <Switch>
             <DyanmicRoute path="/" exact component={Home} authenticated />
             <DyanmicRoute path="/auth" component={AuthForm} guest />
@@ -32,15 +32,19 @@ const App = () => {
                 path="/songs"
                 render={(props) => <SongList {...props} />}
               />
-              <Route
-                exact
-                path="/song/create"
-                render={(props) => <SongCreate {...props} />}
-              />
-              <Route
-                path="/songs/:id"
-                render={(props) => <SongDetail {...props} />}
-              />
+              <Container style={{ marginTop: "5rem" }}>
+                <Switch>
+                  <Route
+                    exact
+                    path="/songs/create"
+                    render={(props) => <SongCreate {...props} />}
+                  />
+                  <Route
+                    path="/songs/:id"
+                    render={(props) => <SongDetail {...props} />}
+                  />
+                </Switch>
+              </Container>
             </Suspense>
             <Redirect from="**" to="/auth" />
           </Switch>

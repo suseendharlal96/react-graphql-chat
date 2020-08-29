@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 import { Card, Button, Form } from "react-bootstrap";
 
@@ -20,22 +21,35 @@ const SongDetail = (props) => {
     variables: { id: props.location.state.id },
   });
 
+  const [addLyric, { loading: lyricLoading }] = useMutation(ADD_LYRIC, {
+    update(_, res) {
+      setLyrics("");
+    },
+    refetchQueries: [
+      { query: SONG_DETAIL, variables: { id: props.location.state.id } },
+    ],
+    onError(err) {
+      console.log(err);
+    },
+  });
+
   const lyricsHandler = (e) => {
     setLyrics(e.target.value);
   };
 
-  const addLyric = () => {
-    console.log(lyrics);
-  };
   return !loading ? (
     <Card bg="success" style={{ width: "50%" }}>
+      <Button variant="light" as={Link} to="/songs">
+        Back to Song List
+      </Button>
       <Card.Img variant="top" src={Music} />
       <Card.Body>
         <Card.Title className="text-white">{data.song.title}</Card.Title>
         {data.song.lyrics.map((lyric, index) => (
-          <Card.Text className="text-white" key={index}>
-            {lyric.content}
-          </Card.Text>
+          <React.Fragment key={index}>
+            <Card.Text className="text-white">{lyric.content}</Card.Text>
+            <Button variant="primary">Like</Button>
+          </React.Fragment>
         ))}
         <Form.Control
           value={lyrics}
@@ -43,9 +57,21 @@ const SongDetail = (props) => {
           type="text"
           placeholder="Add lyrics"
         />
-        <Button variant="primary" onClick={addLyric}>
-          Add lyrics
-        </Button>
+        {lyricLoading ? (
+          <Button variant="primary">Adding lyrics..</Button>
+        ) : (
+          <Button
+            disabled={lyrics.length === 0}
+            variant="primary"
+            onClick={() =>
+              addLyric({
+                variables: { content: lyrics, songId: props.location.state.id },
+              })
+            }
+          >
+            Add lyrics
+          </Button>
+        )}
       </Card.Body>
     </Card>
   ) : (
@@ -60,6 +86,14 @@ const SONG_DETAIL = gql`
       lyrics {
         content
       }
+    }
+  }
+`;
+
+const ADD_LYRIC = gql`
+  mutation addLyric($content: String!, $songId: ID!) {
+    addLyricToSong(content: $content, songId: $songId) {
+      id
     }
   }
 `;

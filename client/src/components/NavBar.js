@@ -13,7 +13,7 @@ const NavBar = (props) => {
     dispatch({ type: "LOGOUT" });
   };
   return (
-    <Navbar bg="primary" variant="dark">
+    <Navbar fixed="top" bg="primary" variant="dark">
       <Navbar.Brand>
         <Link to={user && user.username ? "/" : "/auth"}>
           <Button>Home</Button>
