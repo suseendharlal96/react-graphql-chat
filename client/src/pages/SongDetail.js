@@ -5,10 +5,13 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 
 import { Card, Button, Form } from "react-bootstrap";
 
+import { useAuthState } from "../context/authcontext";
 import Music from "../assets/music.jpg";
 
 const SongDetail = (props) => {
   const [lyrics, setLyrics] = useState("");
+  const [username, setUsername] = useState("");
+  const { user } = useAuthState();
 
   useEffect(() => {
     console.log(props);
@@ -18,6 +21,9 @@ const SongDetail = (props) => {
   }, [props]);
 
   const { data, loading } = useQuery(SONG_DETAIL, {
+    onCompleted: (data) => {
+      setUsername(data.song.user.username);
+    },
     variables: { id: props.location.state.id },
   });
 
@@ -72,26 +78,34 @@ const SongDetail = (props) => {
             </Button>
           </React.Fragment>
         ))}
-        <Form.Control
-          value={lyrics}
-          onChange={lyricsHandler}
-          type="text"
-          placeholder="Add lyrics"
-        />
-        {lyricLoading ? (
-          <Button variant="primary">Adding lyrics..</Button>
-        ) : (
-          <Button
-            disabled={lyrics.length === 0}
-            variant="primary"
-            onClick={() =>
-              addLyric({
-                variables: { content: lyrics, songId: props.location.state.id },
-              })
-            }
-          >
-            Add lyrics
-          </Button>
+        {user && user.username === username && (
+          <>
+            <Form.Control
+              value={lyrics}
+              onChange={lyricsHandler}
+              type="text"
+              placeholder="Add lyrics"
+            />
+            )
+            {lyricLoading ? (
+              <Button variant="primary">Adding lyrics..</Button>
+            ) : (
+              <Button
+                disabled={lyrics.length === 0}
+                variant="primary"
+                onClick={() =>
+                  addLyric({
+                    variables: {
+                      content: lyrics,
+                      songId: props.location.state.id,
+                    },
+                  })
+                }
+              >
+                Add lyrics
+              </Button>
+            )}
+          </>
         )}
       </Card.Body>
     </Card>
@@ -104,6 +118,9 @@ const SONG_DETAIL = gql`
   query getSong($id: ID!) {
     song(id: $id) {
       title
+      user {
+        username
+      }
       lyrics {
         id
         content

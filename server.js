@@ -18,7 +18,7 @@ const server = new ApolloServer({
 // });
 
 mongoose
-  .connect(MONGODB, { useNewUrlParser: true })
+  .connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     return server.listen({ port: PORT });
   })

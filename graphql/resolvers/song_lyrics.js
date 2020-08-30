@@ -24,11 +24,17 @@ module.exports = {
       console.log(result);
       return result;
     },
-    addLyricToSong: async (_, { content, songId }) => {
+    addLyricToSong: async (_, { content, songId }, context) => {
+      const loggedUser = auth(context);
+      const user = await User.findById(loggedUser.id);
       const song = await Song.findById(songId);
       if (!song) {
         throw new UserInputError("song doesnt exist", {
           error: { song: "Song not found" },
+        });
+      } else if (user.id !== song.user.toString()) {
+        throw new UserInputError("Action forbidden", {
+          error: { song: "Unauthorized User" },
         });
       }
       const lyric = new Lyric({ content, song });

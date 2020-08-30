@@ -40,8 +40,9 @@ const App = () => {
                     authenticated
                     render={(props) => <SongCreate {...props} />}
                   />
-                  <Route
+                  <DynamicRoute
                     path="/songs/:id"
+                    authenticated
                     render={(props) => <SongDetail {...props} />}
                   />
                 </Switch>
