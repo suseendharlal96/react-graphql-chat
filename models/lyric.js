@@ -9,10 +9,7 @@ const lyricSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Song",
   },
-  likes: {
-    type: Number,
-    default: 0,
-  },
+  likes: [{ type: String, required: true }],
 });
 
 module.exports = model("Lyric", lyricSchema);

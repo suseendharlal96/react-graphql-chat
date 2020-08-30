@@ -80,6 +80,7 @@ const RegisterForm = (props) => {
             <Form.Control
               type="email"
               value={form.email}
+              autoFocus
               name="email"
               onChange={handleChange}
               placeholder="Enter email"

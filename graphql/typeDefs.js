@@ -5,6 +5,7 @@ module.exports = gql`
     username: String!
     email: String!
     token: String!
+    id:ID!
   }
   type Message {
     uuid: String!
@@ -39,13 +40,13 @@ module.exports = gql`
   type SongType {
     id: ID!
     title: String!
-    user:User!
+    user: User!
     lyrics: [LyricType]!
   }
 
   type LyricType {
     id: ID!
-    likes: Int!
+    likes: [String]!
     content: String!
     song: SongType!
   }
@@ -66,7 +67,7 @@ module.exports = gql`
     sendMessage(content: String!, to: String!): Message!
     addSong(title: String!): SongType
     addLyricToSong(content: String!, songId: ID!): SongType!
-    likeLyric(lyricId:ID!): LyricType!
+    likeLyric(lyricId: ID!): LyricType!
     deleteSong(songId: ID!): String!
   }
 `;

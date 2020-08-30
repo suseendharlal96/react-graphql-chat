@@ -62,11 +62,18 @@ module.exports = {
 
       return "deleted successfully";
     },
-    likeLyric: async (_, { lyricId }) => {
+    likeLyric: async (_, { lyricId }, context) => {
+      const loggedUser = auth(context);
+      console.log("l", loggedUser);
       const lyric = await Lyric.findById(lyricId);
       console.log(lyric);
       if (lyric) {
-        lyric.likes++;
+        const likedIndex = lyric.likes.findIndex((u) => u === loggedUser.id);
+        if (likedIndex !== -1) {
+          lyric.likes.splice(likedIndex, 1);
+        } else {
+          lyric.likes.push(loggedUser.id);
+        }
       }
       return await lyric.save();
     },

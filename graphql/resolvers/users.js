@@ -65,8 +65,10 @@ module.exports = {
         });
       }
       const token = generateToken(user);
+      console.log(user._doc);
       return {
         ...user._doc,
+        id: user.id,
         token,
       };
     },
@@ -101,6 +103,11 @@ module.exports = {
         name: "adsf",
       };
       // return company.find((c) => c.username === parent.username);
+    },
+  },
+  User: {
+    id: async (parent) => {
+      return await User.find({ username: parent.username });
     },
   },
 
@@ -144,7 +151,7 @@ module.exports = {
       });
       const result = await newUser.save();
       const token = generateToken(result);
-      return { ...result._doc, token };
+      return { ...result._doc, id: result.id, token };
     },
   },
 };

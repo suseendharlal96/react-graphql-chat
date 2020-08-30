@@ -11,10 +11,11 @@ import Music from "../assets/music.jpg";
 const SongDetail = (props) => {
   const [lyrics, setLyrics] = useState("");
   const [username, setUsername] = useState("");
-  const { user } = useAuthState();
+  const { user, isLoaded } = useAuthState();
 
   useEffect(() => {
     console.log(props);
+    console.log(user);
     if (!props.location.state.id) {
       props.history.push("/songs");
     }
@@ -39,10 +40,42 @@ const SongDetail = (props) => {
     },
   });
 
-  const [likeLyric] = useMutation(LIKE_LYRIC);
+  const [likeLyric] = useMutation(LIKE_LYRIC, {
+    refetchQueries: [
+      { query: SONG_DETAIL, variables: { id: props.location.state.id } },
+    ],
+  });
 
   const lyricsHandler = (e) => {
     setLyrics(e.target.value);
+  };
+
+  const likeUnlikeButton = (likes, id) => {
+    return likes.findIndex(
+      (userId) => userId.toString() === user.id.toString()
+    ) >= 0 ? (
+      <Button
+        variant="primary"
+        onClick={() =>
+          likeLyric({
+            variables: { lyricId: id },
+          })
+        }
+      >
+        Unlike
+      </Button>
+    ) : (
+      <Button
+        variant="primary"
+        onClick={() =>
+          likeLyric({
+            variables: { lyricId: id },
+          })
+        }
+      >
+        Like
+      </Button>
+    );
   };
 
   return !loading ? (
@@ -56,9 +89,14 @@ const SongDetail = (props) => {
         {data.song.lyrics.map(({ id, content, likes }) => (
           <React.Fragment key={id}>
             <Card.Text className="text-white">
-              {content}-{likes + " like(s)"}
+              {content}-
+              {likes.length > 0
+                ? likes.length > 1
+                  ? `${likes.length}  likes`
+                  : `${likes.length}like`
+                : null}
             </Card.Text>
-            <Button
+            {/* <Button
               variant="primary"
               onClick={() =>
                 likeLyric({
@@ -75,7 +113,8 @@ const SongDetail = (props) => {
               }
             >
               Like
-            </Button>
+            </Button> */}
+            {likeUnlikeButton(likes, id)}
           </React.Fragment>
         ))}
         {user && user.username === username && (
