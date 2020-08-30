@@ -33,6 +33,8 @@ const SongDetail = (props) => {
     },
   });
 
+  const [likeLyric] = useMutation(LIKE_LYRIC);
+
   const lyricsHandler = (e) => {
     setLyrics(e.target.value);
   };
@@ -45,10 +47,29 @@ const SongDetail = (props) => {
       <Card.Img variant="top" src={Music} />
       <Card.Body>
         <Card.Title className="text-white">{data.song.title}</Card.Title>
-        {data.song.lyrics.map((lyric, index) => (
-          <React.Fragment key={index}>
-            <Card.Text className="text-white">{lyric.content}</Card.Text>
-            <Button variant="primary">Like</Button>
+        {data.song.lyrics.map(({ id, content, likes }) => (
+          <React.Fragment key={id}>
+            <Card.Text className="text-white">
+              {content}-{likes + " like(s)"}
+            </Card.Text>
+            <Button
+              variant="primary"
+              onClick={() =>
+                likeLyric({
+                  variables: { lyricId: id },
+                  optimisticResponse: {
+                    __typename: "Mutation",
+                    likeLyric: {
+                      id,
+                      __typename: "LyricType",
+                      likes: likes + 1,
+                    },
+                  },
+                })
+              }
+            >
+              Like
+            </Button>
           </React.Fragment>
         ))}
         <Form.Control
@@ -80,11 +101,13 @@ const SongDetail = (props) => {
 };
 
 const SONG_DETAIL = gql`
-  query getSongs($id: ID!) {
+  query getSong($id: ID!) {
     song(id: $id) {
       title
       lyrics {
+        id
         content
+        likes
       }
     }
   }
@@ -94,6 +117,15 @@ const ADD_LYRIC = gql`
   mutation addLyric($content: String!, $songId: ID!) {
     addLyricToSong(content: $content, songId: $songId) {
       id
+    }
+  }
+`;
+
+const LIKE_LYRIC = gql`
+  mutation likeLyric($lyricId: ID!) {
+    likeLyric(lyricId: $lyricId) {
+      id
+      likes
     }
   }
 `;

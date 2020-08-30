@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
 import "./App.scss";
 import { AuthProvider } from "./context/authcontext";
-import DyanmicRoute from "./util/DynamicRoute";
+import DynamicRoute from "./util/DynamicRoute";
 // lazily load
 const SongList = lazy(() => import("./pages/SongList"));
 const SongCreate = lazy(() => import("./pages/SongCreate"));
@@ -22,8 +22,8 @@ const App = () => {
         <Route path="/" component={NavBar} />
         <Container style={{ marginTop: "2rem" }}>
           <Switch>
-            <DyanmicRoute path="/" exact component={Home} authenticated />
-            <DyanmicRoute path="/auth" component={AuthForm} guest />
+            <DynamicRoute path="/" exact component={Home} authenticated />
+            <DynamicRoute path="/auth" component={AuthForm} guest />
             {/* <Route exact path="/songs" component={SongList} />
             <Route exact path="/songs/:id" component={SongDetail} /> */}
             <Suspense fallback={<div>Loading..</div>}>
@@ -34,9 +34,10 @@ const App = () => {
               />
               <Container style={{ marginTop: "5rem" }}>
                 <Switch>
-                  <Route
+                  <DynamicRoute
                     exact
                     path="/songs/create"
+                    authenticated
                     render={(props) => <SongCreate {...props} />}
                   />
                   <Route

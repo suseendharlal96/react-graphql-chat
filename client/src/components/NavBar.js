@@ -11,6 +11,7 @@ const NavBar = (props) => {
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
+    props.history.push("/auth");
   };
   return (
     <Navbar fixed="top" bg="primary" variant="dark">

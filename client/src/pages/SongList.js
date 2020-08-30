@@ -6,10 +6,13 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { Card, ListGroup, Button } from "react-bootstrap";
 
 import { slugify } from "../util/slugify";
+import { useAuthState } from "../context/authcontext";
 import { GET_SONG_LIST } from "../util/songsQuery";
 
 const SongList = (props) => {
   const [delIndex, setDelIndex] = useState(null);
+
+  const { user } = useAuthState();
 
   const { data, loading } = useQuery(GET_SONG_LIST);
 
@@ -34,7 +37,7 @@ const SongList = (props) => {
             Create a song
           </Button>
           <ListGroup variant="flush">
-            {data.songs.map(({ id, title }, index) => (
+            {data.songs.map(({ id, title, user: { username } }, index) => (
               <React.Fragment key={id}>
                 <ListGroup.Item>{title}</ListGroup.Item>
                 <ListGroup.Item>
@@ -46,13 +49,13 @@ const SongList = (props) => {
                       style={{ float: "right" }}
                       variant="danger"
                     >{`Deleting ${title}...`}</Button>
-                  ) : (
+                  ) : user && user.username === username ? (
                     <Button
                       style={{ float: "right" }}
                       variant="danger"
                       onClick={() => removeSong(id, index)}
                     >{`Delete ${title}`}</Button>
-                  )}
+                  ) : null}
                 </ListGroup.Item>
               </React.Fragment>
             ))}

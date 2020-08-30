@@ -5,6 +5,9 @@ export const GET_SONG_LIST = gql`
     songs {
       id
       title
+      user {
+        username
+      }
     }
   }
 `;

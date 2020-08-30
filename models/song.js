@@ -15,6 +15,10 @@ const songSchema = new Schema({
       ref: "Lyric",
     },
   ],
+  createdAt: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = model("Song", songSchema);
