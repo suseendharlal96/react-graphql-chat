@@ -5,7 +5,9 @@ module.exports = gql`
     username: String!
     email: String!
     token: String!
-    id:ID!
+    imageUrl: String!
+    id: ID!
+    latestMessage: Message
   }
   type Message {
     uuid: String!
@@ -35,6 +37,7 @@ module.exports = gql`
     email: String!
     password: String!
     confirmPassword: String!
+    imageUrl: String!
   }
 
   type SongType {

@@ -7,5 +7,6 @@ export const userFragment = gql`
     token
     email
     id
+    imageUrl
   }
 `;

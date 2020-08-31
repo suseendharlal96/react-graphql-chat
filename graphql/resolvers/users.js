@@ -5,6 +5,7 @@ const { UserInputError } = require("apollo-server");
 
 // local imports
 const User = require("../../models/user");
+const Message = require("../../models/message");
 const {
   validateSigninInput,
   validateSignupInput,
@@ -36,8 +37,23 @@ module.exports = {
     getUsers: async (_, __, context) => {
       try {
         const loggedUser = auth(context);
-        const users = await User.find({ email: { $ne: loggedUser.email } });
-        return users;
+        let otherUsers = await User.find({ email: { $ne: loggedUser.email } });
+        const loggedUserMessages = await Message.find({
+          $or: [
+            { to: { $eq: loggedUser.email } },
+            { from: { $eq: loggedUser.email } },
+          ],
+        }).sort({ createdAt: "desc" });
+        otherUsers = otherUsers.map((otherUser) => {
+          const latestMessage = loggedUserMessages.find(
+            (m) => m.from === otherUser.email || m.to === otherUser.email
+          );
+          if (latestMessage !== undefined) {
+            otherUser.latestMessage = latestMessage;
+          }
+          return otherUser;
+        });
+        return otherUsers;
       } catch (err) {
         throw new Error(err);
       }
@@ -114,7 +130,7 @@ module.exports = {
   Mutation: {
     signup: async (
       _,
-      { signupInput: { username, email, password, confirmPassword } }
+      { signupInput: { username, email, password, confirmPassword, imageUrl } }
     ) => {
       const { errors, isValid } = validateSignupInput(
         username,
@@ -148,6 +164,8 @@ module.exports = {
         username,
         email,
         password: hashPass,
+        imageUrl,
+        createdAt: new Date().toISOString(),
       });
       const result = await newUser.save();
       const token = generateToken(result);

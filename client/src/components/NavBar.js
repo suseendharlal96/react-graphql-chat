@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Button, Navbar } from "react-bootstrap";
+import { Button, Navbar, Image } from "react-bootstrap";
 
 import { useAuthDispatch, useAuthState } from "../context/authcontext";
+import Profile from "../assets/blank-profile.png";
 
 const NavBar = (props) => {
   const dispatch = useAuthDispatch();
@@ -28,8 +29,14 @@ const NavBar = (props) => {
         {user && user.username ? (
           <>
             <Button onClick={logout}>Logout</Button>
+            <Image
+              src={user.imageUrl ? user.imageUrl : Profile}
+              roundedCircle
+              className="mr-2 "
+              style={{ width: 50, height: 50, objectFit: "cover" }}
+            />
             <Navbar.Text style={{ color: "yellow" }}>
-              Signed in as: {user.username}
+              {user.username}
             </Navbar.Text>
           </>
         ) : (

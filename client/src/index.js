@@ -4,11 +4,11 @@ import App from "./App";
 import ApolloProvider from "./ApolloProvider";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ApolloProvider>
-      <App />
-    </ApolloProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  // {/* </React.StrictMode>, */}
+  <ApolloProvider>
+    <App />
+  </ApolloProvider>,
   document.getElementById("root")
 );
 

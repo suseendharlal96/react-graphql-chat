@@ -1,6 +1,10 @@
+$paragraph-margin-bottom: 0;
 @import "~bootstrap/scss/bootstrap";
 
 body {
   height: 100vh;
   background: linear-gradient(to bottom right, navy, red);
+}
+.users-section {
+  background: linear-gradient(to bottom right, red, navy);
 }

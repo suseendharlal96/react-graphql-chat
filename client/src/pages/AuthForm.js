@@ -12,6 +12,7 @@ const RegisterForm = (props) => {
     username: "",
     password: "",
     confirmPassword: "",
+    imageUrl: "",
   });
 
   const [isSignup, setMode] = useState(false);
@@ -27,8 +28,9 @@ const RegisterForm = (props) => {
       props.history.push("/");
     },
     onError(err) {
-      console.log(err.graphQLErrors[0].extensions.errors);
-      setErrors(err.graphQLErrors[0].extensions.errors);
+      console.log(err);
+      // console.log(err.graphQLErrors[0].extensions.errors);
+      // setErrors(err.graphQLErrors[0].extensions.errors);
     },
   });
 
@@ -132,29 +134,42 @@ const RegisterForm = (props) => {
             )}
           </Form.Group>
           {isSignup && (
-            <Form.Group controlId="formBasicConfirmPassword">
-              <Form.Label
-                className={
-                  errors.confirmPassword ? "text-danger" : "text-white"
-                }
-              >
-                ConfirmPassword
-              </Form.Label>
-              <Form.Control
-                type="password"
-                value={form.confirmPassword}
-                name="confirmPassword"
-                onChange={handleChange}
-                placeholder="Confirm Password"
-                className={errors.confirmPassword && "is-invalid"}
-                disabled={loading}
-              />
-              {errors.confirmPassword && (
-                <Form.Text className="text-danger">
-                  {errors.confirmPassword}
-                </Form.Text>
-              )}
-            </Form.Group>
+            <>
+              <Form.Group controlId="formBasicConfirmPassword">
+                <Form.Label
+                  className={
+                    errors.confirmPassword ? "text-danger" : "text-white"
+                  }
+                >
+                  ConfirmPassword
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  value={form.confirmPassword}
+                  name="confirmPassword"
+                  onChange={handleChange}
+                  placeholder="Confirm Password"
+                  className={errors.confirmPassword && "is-invalid"}
+                  disabled={loading}
+                />
+                {errors.confirmPassword && (
+                  <Form.Text className="text-danger">
+                    {errors.confirmPassword}
+                  </Form.Text>
+                )}
+              </Form.Group>
+              <Form.Group controlId="formBasicConfirmPassword">
+                <Form.Label className="text-white">Image Url</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={form.imageUrl}
+                  name="imageUrl"
+                  onChange={handleChange}
+                  placeholder="Profile imageurl"
+                  disabled={loading}
+                />
+              </Form.Group>
+            </>
           )}
           <Row>
             <Col>
@@ -217,6 +232,7 @@ const REGISTER_USER = gql`
     $email: String!
     $password: String!
     $confirmPassword: String!
+    $imageUrl: String!
   ) {
     signup(
       signupInput: {
@@ -224,6 +240,7 @@ const REGISTER_USER = gql`
         email: $email
         password: $password
         confirmPassword: $confirmPassword
+        imageUrl: $imageUrl
       }
     ) {
       ...userData

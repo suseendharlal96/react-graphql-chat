@@ -13,6 +13,13 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  imageUrl: {
+    type: String,
+  },
+  createdAt: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = model("User", userSchema);

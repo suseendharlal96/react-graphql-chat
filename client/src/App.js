@@ -20,7 +20,7 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <Route path="/" component={NavBar} />
-        <Container style={{ marginTop: "2rem" }}>
+        <Container style={{ marginTop: "5rem" }}>
           <Switch>
             <DynamicRoute path="/" exact component={Home} authenticated />
             <DynamicRoute path="/auth" component={AuthForm} guest />
