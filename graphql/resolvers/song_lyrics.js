@@ -1,10 +1,12 @@
-const { UserInputError } = require("apollo-server");
+const { UserInputError, PubSub } = require("apollo-server");
+const pubsub = new PubSub();
 
 const User = require("../../models/user");
 const Song = require("../../models/song");
 const Lyric = require("../../models/lyric");
 const auth = require("../../util/auth");
 
+const SONG_ADDED = "POST_ADDED";
 module.exports = {
   Query: {
     songs: async () => await Song.find({}).sort({ createdAt: "desc" }),
@@ -22,6 +24,7 @@ module.exports = {
       });
       const result = await song.save();
       console.log(result);
+      pubsub.publish(SONG_ADDED, { songAdded: result });
       return result;
     },
     addLyricToSong: async (_, { content, songId }, context) => {
@@ -76,6 +79,11 @@ module.exports = {
         }
       }
       return await lyric.save();
+    },
+  },
+  Subscription: {
+    songAdded: {
+      subscribe: () => pubsub.asyncIterator([SONG_ADDED]),
     },
   },
   SongType: {

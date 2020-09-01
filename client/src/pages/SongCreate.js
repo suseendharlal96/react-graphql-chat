@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 
 import { Form, Button } from "react-bootstrap";
 
@@ -21,7 +21,7 @@ const SongCreate = (props) => {
     });
   };
 
-  const [addSong, { data, loading }] = useMutation(ADD_SONG, {
+  const [addSong] = useMutation(ADD_SONG, {
     update: (_, result) => {
       console.log(result);
       props.history.push("/songs");
@@ -31,6 +31,11 @@ const SongCreate = (props) => {
       console.log(err);
     },
   });
+
+  const { data } = useSubscription(SONG_ADDED_SUBSCRIPTION);
+  if (data) {
+    console.log(data);
+  }
 
   return (
     <Form onSubmit={createSong} noValidate>
@@ -55,6 +60,18 @@ const ADD_SONG = gql`
   mutation addSong($title: String!) {
     addSong(title: $title) {
       title
+    }
+  }
+`;
+
+const SONG_ADDED_SUBSCRIPTION = gql`
+  subscription songAdded {
+    songAdded {
+      title
+      id
+      user {
+        username
+      }
     }
   }
 `;

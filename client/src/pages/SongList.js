@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useSubscription } from "@apollo/client";
 
 import { Card, ListGroup, Button } from "react-bootstrap";
 
@@ -14,7 +14,7 @@ const SongList = (props) => {
 
   const { user } = useAuthState();
 
-  const { data, loading } = useQuery(GET_SONG_LIST);
+  const { data: mysongs, loading } = useQuery(GET_SONG_LIST);
 
   const detail = (id, title) => {
     props.history.push(`/songs/${slugify(title)}`, { id });
@@ -29,6 +29,11 @@ const SongList = (props) => {
       console.log(err);
     },
   });
+
+  // if (songAdded) {
+  //   console.log("subs", songAdded);
+  // }
+
   return (
     <div className="py-5">
       {!loading ? (
@@ -37,7 +42,7 @@ const SongList = (props) => {
             Create a song
           </Button>
           <ListGroup variant="flush">
-            {data.songs.map(({ id, title, user: { username } }, index) => (
+            {mysongs.songs.map(({ id, title, user: { username } }, index) => (
               <React.Fragment key={id}>
                 <ListGroup.Item>{title}</ListGroup.Item>
                 <ListGroup.Item>

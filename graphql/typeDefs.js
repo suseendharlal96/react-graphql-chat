@@ -73,4 +73,8 @@ module.exports = gql`
     likeLyric(lyricId: ID!): LyricType!
     deleteSong(songId: ID!): String!
   }
+
+  type Subscription {
+    songAdded: SongType!
+  }
 `;

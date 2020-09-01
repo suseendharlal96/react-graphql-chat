@@ -30,4 +30,7 @@ module.exports = {
     ...messageResolver.Mutation,
     ...songlyricResolver.Mutation,
   },
+  Subscription: {
+    ...songlyricResolver.Subscription,
+  },
 };
