@@ -1,22 +1,18 @@
 import React, { useEffect } from "react";
 
-import { useQuery, gql } from "@apollo/client";
-
-import { useAuthState } from "../context/authcontext";
+import { useLazyQuery, gql } from "@apollo/client";
 
 const Message = ({ username }) => {
-  const { isLoaded } = useAuthState();
   useEffect(() => {
-    if (username && isLoaded) {
-      refetch();
+    if (username) {
+      getMessages({ variables: { from: username } });
     }
   }, [username]);
 
-  const {
-    loading: messageLoading,
-    data: messageData,
-    refetch,
-  } = useQuery(GET_MESSAGES, { variables: { from: username } });
+  const [
+    getMessages,
+    { loading: messageLoading, data: messageData },
+  ] = useLazyQuery(GET_MESSAGES);
 
   return (
     <div>

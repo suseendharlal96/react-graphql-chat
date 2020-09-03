@@ -25,11 +25,6 @@ const authReducer = (state, action) => {
         ...state,
         user: null,
       };
-    case "HOMEPAGELOADED":
-      return {
-        ...state,
-        isLoaded: action.isLoaded,
-      };
     default:
       return state;
   }

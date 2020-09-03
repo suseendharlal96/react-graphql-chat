@@ -8,3 +8,11 @@ body {
 .users-section {
   background: linear-gradient(to bottom right, red, navy);
 }
+
+.user-content:hover {
+  background-color: rgb(16, 112, 238);
+}
+
+.selected-user {
+  background-color: rgb(114, 185, 22);
+}

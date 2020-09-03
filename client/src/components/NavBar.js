@@ -12,7 +12,7 @@ const NavBar = (props) => {
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
-    props.history.push("/auth");
+    window.location.href = "/auth";
   };
   return (
     <Navbar fixed="top" bg="primary" variant="dark">

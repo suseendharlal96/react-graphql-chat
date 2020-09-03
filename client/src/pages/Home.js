@@ -1,44 +1,56 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { gql, useQuery, NetworkStatus } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
-import { Row, Col, Image } from "react-bootstrap";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { Row, Col, Image, Gri } from "react-bootstrap";
 
 import Profile from "../assets/blank-profile.png";
 import Message from "../components/Message";
 import { useAuthState, useAuthDispatch } from "../context/authcontext";
 
 const Home = () => {
-  const { user, isLoaded } = useAuthState();
-  const dispatch = useAuthDispatch();
+  const { user } = useAuthState();
 
   const [username, setUsername] = useState(null);
 
-  useEffect(() => {
-    dispatch({ type: "HOMEPAGELOADED", isLoaded: true });
-    if (isLoaded) {
-      refetch();
-    }
-  }, []);
-
-  const { loading, data, error, refetch, networkStatus } = useQuery(GET_USERS);
+  const { loading, data, error } = useQuery(GET_USERS);
 
   if (error) {
     console.log(error);
   }
 
   let userContent;
-  if (!data || loading || networkStatus === NetworkStatus.refetch) {
-    userContent = <p>Loading..</p>;
+  if (!data || loading) {
+    userContent = Array.from({ length: 5 }).map((item, index) => (
+      <Row key={index} className="d-flex p-3">
+        <Col sm={12} md="auto">
+          <SkeletonTheme color="darkgray">
+            <Skeleton width={50} height={50} circle={true} />
+          </SkeletonTheme>
+        </Col>
+        <Col sm={12} md="auto">
+          <SkeletonTheme color="#ffc107">
+            <Skeleton width={65} height={10} />
+          </SkeletonTheme>
+          <SkeletonTheme color="#fff">
+            <Skeleton width={265} height={10} />
+          </SkeletonTheme>
+        </Col>
+      </Row>
+    ));
   } else if (data.getUsers.length === 0) {
     userContent = <p>No users have joined yet..</p>;
   } else {
     userContent = data.getUsers.map((user, index) => (
       <div
+        role="button"
         onClick={() => setUsername(user.username)}
-        className="d-flex p-3"
-        style={{ borderBottom: "1px solid black", cursor: "pointer" }}
+        className={`user-content d-flex p-3 ${
+          username === user.username ? "selected-user" : ""
+        }`}
+        style={{ borderBottom: "1px solid black" }}
         key={index}
       >
         <Image
