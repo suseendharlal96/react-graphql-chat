@@ -54,6 +54,13 @@ module.exports = gql`
     song: SongType!
   }
 
+  type File {
+    id: ID!
+    filename: String!
+    mimetype: String!
+    path: String!
+  }
+
   type Query {
     getUsers: [User]!
     getMyUsers: [MyUser]!
@@ -63,6 +70,7 @@ module.exports = gql`
     songs: [SongType]!
     song(id: ID!): SongType
     lyric(id: ID!): LyricType
+    files: [File!]
   }
 
   type Mutation {
@@ -72,6 +80,7 @@ module.exports = gql`
     addLyricToSong(content: String!, songId: ID!): SongType!
     likeLyric(lyricId: ID!): LyricType!
     deleteSong(songId: ID!): String!
+    uploadFile(file: Upload!): File
   }
 
   type Subscription {

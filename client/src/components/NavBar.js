@@ -23,6 +23,9 @@ const NavBar = (props) => {
         <Link to="/songs">
           <Button>Songs</Button>
         </Link>
+        {/* <Link to="/upload">
+          <Button>upload</Button>
+        </Link> */}
       </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content-end">

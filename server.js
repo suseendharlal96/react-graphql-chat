@@ -1,11 +1,22 @@
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
 
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const { MONGODB } = require("./config");
 
 const PORT = process.env.PORT || 5000;
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+const dir = path.join(process.cwd(), "./images");
+console.log(dir);
+app.use(express.static(dir));
+app.use("./images", express.static(dir));
 
 const server = new ApolloServer({
   typeDefs,
