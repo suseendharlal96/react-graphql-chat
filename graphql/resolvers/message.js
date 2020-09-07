@@ -49,7 +49,7 @@ module.exports = {
         to,
         uuid: uuidv4(),
         content,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       });
       const result = await message.save();
       console.log(result);
