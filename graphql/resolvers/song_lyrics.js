@@ -1,12 +1,11 @@
-const { UserInputError, PubSub } = require("apollo-server");
-const pubsub = new PubSub();
+const { UserInputError, AuthenticationError } = require("apollo-server");
 
 const User = require("../../models/user");
 const Song = require("../../models/song");
 const Lyric = require("../../models/lyric");
-const auth = require("../../util/auth");
+// const auth = require("../../util/auth");
 
-const SONG_ADDED = "POST_ADDED";
+const SONG_ADDED = "SONG_ADDED";
 module.exports = {
   Query: {
     songs: async () => await Song.find({}).sort({ createdAt: "desc" }),
@@ -14,8 +13,11 @@ module.exports = {
     song: async (_, { id }) => await Song.findById(id),
   },
   Mutation: {
-    addSong: async (_, { title }, context) => {
-      const loggedUser = auth(context);
+    addSong: async (_, { title }, { loggedUser, pubSub }) => {
+      // const loggedUser = auth(context);
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       const user = await User.findById(loggedUser.id);
       const song = new Song({
         user,
@@ -24,11 +26,14 @@ module.exports = {
       });
       const result = await song.save();
       console.log(result);
-      pubsub.publish(SONG_ADDED, { songAdded: result });
+      // pubSub.publish(SONG_ADDED, { songAdded: result });
       return result;
     },
-    addLyricToSong: async (_, { content, songId }, context) => {
-      const loggedUser = auth(context);
+    addLyricToSong: async (_, { content, songId }, { loggedUser }) => {
+      // const loggedUser = auth(context);
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       const user = await User.findById(loggedUser.id);
       const song = await Song.findById(songId);
       if (!song) {
@@ -47,8 +52,11 @@ module.exports = {
       console.log("r", result);
       return result;
     },
-    deleteSong: async (_, { songId }, context) => {
-      const loggedUser = auth(context);
+    deleteSong: async (_, { songId }, { loggedUser }) => {
+      // const loggedUser = auth(context);
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       const user = await User.findById(loggedUser.id);
       const song = await Song.findById(songId);
       if (!song) {
@@ -65,8 +73,11 @@ module.exports = {
 
       return "deleted successfully";
     },
-    likeLyric: async (_, { lyricId }, context) => {
-      const loggedUser = auth(context);
+    likeLyric: async (_, { lyricId }, { loggedUser }) => {
+      // const loggedUser = auth(context);
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       console.log("l", loggedUser);
       const lyric = await Lyric.findById(lyricId);
       console.log(lyric);
@@ -81,11 +92,11 @@ module.exports = {
       return await lyric.save();
     },
   },
-  Subscription: {
-    songAdded: {
-      subscribe: () => pubsub.asyncIterator([SONG_ADDED]),
-    },
-  },
+  // Subscription: {
+  //   songAdded: {
+  //     subscribe: (_, _, { pubSub }) => pubSub.asyncIterator([SONG_ADDED]),
+  //   },
+  // },
   SongType: {
     lyrics: async (parent, args) => {
       console.log(parent.lyrics);

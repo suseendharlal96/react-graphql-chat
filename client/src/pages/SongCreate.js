@@ -4,9 +4,27 @@ import { gql, useMutation, useSubscription } from "@apollo/client";
 
 import { Form, Button } from "react-bootstrap";
 
+import songSubs from "../components/songSubscription";
 import { GET_SONG_LIST } from "../util/songsQuery";
 
 const SongCreate = (props) => {
+  const a = songSubs();
+  console.log(a);
+  // const SONG_ADDED_SUBSCRIPTION = gql`
+  //   subscription songAdded {
+  //     songAdded {
+  //       title
+  //       id
+  //       user {
+  //         username
+  //       }
+  //     }
+  //   }
+  // `;
+  // const { data } = useSubscription(SONG_ADDED_SUBSCRIPTION);
+  // if (data) {
+  //   console.log(data);
+  // }
   const [title, settitle] = useState("");
 
   const handleChange = (e) => {
@@ -32,11 +50,6 @@ const SongCreate = (props) => {
     },
   });
 
-  const { data } = useSubscription(SONG_ADDED_SUBSCRIPTION);
-  if (data) {
-    console.log(data);
-  }
-
   return (
     <Form onSubmit={createSong} noValidate>
       <Form.Group controlId="formBasicEmail">
@@ -60,18 +73,6 @@ const ADD_SONG = gql`
   mutation addSong($title: String!) {
     addSong(title: $title) {
       title
-    }
-  }
-`;
-
-const SONG_ADDED_SUBSCRIPTION = gql`
-  subscription songAdded {
-    songAdded {
-      title
-      id
-      user {
-        username
-      }
     }
   }
 `;

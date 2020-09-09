@@ -1,15 +1,21 @@
-const { UserInputError } = require("apollo-server");
+const {
+  UserInputError,
+  AuthenticationError,
+  withFilter,
+} = require("apollo-server");
 
 const { v4: uuidv4 } = require("uuid");
 
 const Message = require("../../models/message");
 const User = require("../../models/user");
-const auth = require("../../util/auth");
 
+const MESSAGE_SENT = "MESSAGE_SENT";
 module.exports = {
   Query: {
-    getMessages: async (_, { from }, context) => {
-      const loggedUser = auth(context);
+    getMessages: async (_, { from }, { loggedUser }) => {
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       const otherUser = await User.findOne({ username: from });
       if (!otherUser) {
         throw new UserInputError("User not found");
@@ -32,8 +38,10 @@ module.exports = {
     },
   },
   Mutation: {
-    sendMessage: async (_, { content, to }, context) => {
-      const loggedUser = auth(context);
+    sendMessage: async (_, { content, to }, { loggedUser, pubSub }) => {
+      if (!loggedUser) {
+        throw new AuthenticationError("Unauthenticated");
+      }
       const messageReceiver = await User.findOne({ email: to });
       console.log("r", messageReceiver);
       if (!messageReceiver) {
@@ -53,7 +61,30 @@ module.exports = {
       });
       const result = await message.save();
       console.log(result);
+      pubSub.publish(MESSAGE_SENT, { messageSent: result });
       return result;
+    },
+  },
+  Subscription: {
+    messageSent: {
+      subscribe: withFilter(
+        (parent, args, { loggedUser, pubSub }) => {
+          console.log(loggedUser);
+          if (!loggedUser) {
+            throw new AuthenticationError("Unauthenticated");
+          }
+          return pubSub.asyncIterator([MESSAGE_SENT]);
+        },
+        ({ messageSent }, _, { loggedUser }) => {
+          if (
+            messageSent.to === loggedUser.email ||
+            messageSent.from === loggedUser.email
+          ) {
+            return true;
+          }
+          return false;
+        }
+      ),
     },
   },
 };

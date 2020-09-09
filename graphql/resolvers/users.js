@@ -1,8 +1,8 @@
 // global imports
+const { UserInputError, AuthenticationError } = require("apollo-server");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { createWriteStream, mkdir } = require("fs");
-const { UserInputError } = require("apollo-server");
 
 // local imports
 const User = require("../../models/user");
@@ -12,7 +12,7 @@ const {
   validateSigninInput,
   validateSignupInput,
 } = require("../../util/validation");
-const auth = require("../../util/auth");
+// const auth = require("../../util/auth");
 const { SECRET_KEY } = require("../../config");
 
 const generateToken = (user) => {
@@ -54,9 +54,12 @@ const company = [
 ];
 module.exports = {
   Query: {
-    getUsers: async (_, __, context) => {
+    getUsers: async (_, __, { loggedUser }) => {
       try {
-        const loggedUser = auth(context);
+        if (!loggedUser) {
+          throw new AuthenticationError("Unauthenticated");
+        }
+        // const loggedUser = auth(context);
         let otherUsers = await User.find({ email: { $ne: loggedUser.email } });
         const loggedUserMessages = await Message.find({
           $or: [

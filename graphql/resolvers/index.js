@@ -31,6 +31,7 @@ module.exports = {
     ...songlyricResolver.Mutation,
   },
   Subscription: {
-    ...songlyricResolver.Subscription,
+    // ...songlyricResolver.Subscription,
+    ...messageResolver.Subscription,
   },
 };

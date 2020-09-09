@@ -4,7 +4,7 @@ import {
   ApolloClient,
   split,
   InMemoryCache,
-  createHttpLink,
+  HttpLink,
   ApolloProvider as Provider,
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
@@ -12,7 +12,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { setContext } from "@apollo/client/link/context";
 
-const httpLink = createUploadLink({
+const httpLink = new HttpLink({
   uri: "http://localhost:5000/",
 });
 
@@ -21,7 +21,7 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: localStorage.getItem("token"),
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   },
 });
