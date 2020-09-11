@@ -7,6 +7,26 @@ module.exports = {
     ...messageResolver.Query,
     ...songlyricResolver.Query,
   },
+  Mutation: {
+    ...userResolver.Mutation,
+    ...messageResolver.Mutation,
+    ...songlyricResolver.Mutation,
+  },
+  Subscription: {
+    // ...songlyricResolver.Subscription,
+    ...messageResolver.Subscription,
+  },
+  Reaction: {
+    ...messageResolver.Reaction,
+  },
+  // song-lyric
+  SongType: {
+    ...songlyricResolver.SongType,
+  },
+  LyricType: {
+    ...songlyricResolver.LyricType,
+  },
+  // sample
   MyUser: {
     ...userResolver.MyUser,
   },
@@ -18,20 +38,5 @@ module.exports = {
   },
   Home: {
     ...userResolver.Home,
-  },
-  SongType: {
-    ...songlyricResolver.SongType,
-  },
-  LyricType: {
-    ...songlyricResolver.LyricType,
-  },
-  Mutation: {
-    ...userResolver.Mutation,
-    ...messageResolver.Mutation,
-    ...songlyricResolver.Mutation,
-  },
-  Subscription: {
-    // ...songlyricResolver.Subscription,
-    ...messageResolver.Subscription,
   },
 };
