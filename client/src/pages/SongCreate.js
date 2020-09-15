@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { gql, useMutation, useSubscription } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 
 import { Form, Button } from "react-bootstrap";
 

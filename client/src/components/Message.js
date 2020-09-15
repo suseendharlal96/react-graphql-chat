@@ -7,7 +7,7 @@ import { useAuthState } from "../context/authcontext";
 const Message = ({ message }) => {
   const { user } = useAuthState();
   const sentByLoggedUser = message.from === user.email;
-  const received = !sentByLoggedUser;
+  // const received = !sentByLoggedUser;
 
   return (
     <div className={`d-flex my-3 ${sentByLoggedUser ? "ml-auto" : "mr-auto"}`}>

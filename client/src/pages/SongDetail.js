@@ -11,7 +11,7 @@ import Music from "../assets/music.jpg";
 const SongDetail = (props) => {
   const [lyrics, setLyrics] = useState("");
   const [username, setUsername] = useState("");
-  const { user, isLoaded } = useAuthState();
+  const { user } = useAuthState();
 
   useEffect(() => {
     console.log(props);
