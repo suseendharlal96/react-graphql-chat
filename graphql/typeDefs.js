@@ -15,12 +15,13 @@ module.exports = gql`
     to: String!
     from: String!
     createdAt: String!
+    reactions: [Reaction]!
   }
   type Reaction {
     content: String!
     uuid: String!
     message: Message!
-    createdAt:String!
+    createdAt: String!
     user: User!
   }
   type MyUser {

@@ -30,6 +30,17 @@ module.exports = {
           { from: { $in: findMessagesIn } },
         ],
       }).sort({ createdAt: "desc" });
+      console.log("msg", messages);
+      // const a = [];
+      // messages.forEach((msg) => {
+      //   a.push({
+      //     ...msg,
+      //     reactions: await Reaction.find({ uuid: msg.uuid })
+      //       ? await Reaction.find({ uuid: msg.uuid })
+      //       : [],
+      //   });
+      // });
+      // console.log("messages", a);
       return messages;
     },
   },
@@ -38,7 +49,11 @@ module.exports = {
       console.log(parent);
       return new Date(parent.createdAt).toISOString();
     },
+    reactions: (parent) => {
+      return Reaction.find({ messageId: parent.id });
+    },
   },
+
   Mutation: {
     sendMessage: async (_, { content, to }, { loggedUser, pubSub }) => {
       if (!loggedUser) {
