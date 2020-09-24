@@ -45,7 +45,6 @@ module.exports = gql`
     email: String!
     password: String!
     confirmPassword: String!
-    imageUrl: String!
   }
 
   type SongType {
@@ -90,6 +89,7 @@ module.exports = gql`
     deleteSong(songId: ID!): String!
     uploadFile(file: Upload!): File
     reactToMessage(uuid: String!, content: String!): Reaction!
+    fileUpload(file: Upload!, username: String!): String!
   }
 
   type Subscription {

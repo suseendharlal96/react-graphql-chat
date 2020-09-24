@@ -1,8 +1,9 @@
 // global imports
 const { UserInputError, AuthenticationError } = require("apollo-server");
+const path = require("path");
+const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { createWriteStream, mkdir } = require("fs");
 
 // local imports
 const User = require("../../models/user");
@@ -12,7 +13,6 @@ const {
   validateSigninInput,
   validateSignupInput,
 } = require("../../util/validation");
-// const auth = require("../../util/auth");
 const { SECRET_KEY } = require("../../config");
 
 const generateToken = (user) => {
@@ -27,22 +27,15 @@ const generateToken = (user) => {
   );
 };
 
-const storeUpload = async ({ stream, filename, mimetype }) => {
-  const id = new Date().toISOString();
-  const path = `./images/${id}-${filename}`;
-  return new Promise((resolve, reject) =>
-    stream
-      .pipe(createWriteStream(path))
-      .on("finish", () => resolve({ id, path, filename, mimetype }))
-      .on("error", reject)
-  );
-};
-
-const processUpload = async (upload) => {
-  const { createReadStream, filename, mimetype } = await upload;
-  const stream = createReadStream();
-  const file = await storeUpload({ stream, filename, mimetype });
-  return file;
+const generateRandomString = (length) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };
 
 const myusers = [{ username: "sus" }, { username: "sug" }];
@@ -156,7 +149,7 @@ module.exports = {
   Mutation: {
     signup: async (
       _,
-      { signupInput: { username, email, password, confirmPassword, imageUrl } }
+      { signupInput: { username, email, password, confirmPassword } }
     ) => {
       const { errors, isValid } = validateSignupInput(
         username,
@@ -197,15 +190,36 @@ module.exports = {
       const token = generateToken(result);
       return { ...result._doc, id: result.id, token };
     },
-    uploadFile: async (_, { file }) => {
+    fileUpload: async (_, { file, username }) => {
       console.log(file);
-      mkdir("./images", { recursive: true }, (err) => {
-        if (err) throw err;
-      });
-      const upload = await processUpload(file);
-      // save our file to the mongodb
-      await File.create(upload);
-      return upload;
+      console.log(username);
+      const { createReadStream, filename } = await file;
+      const stream = createReadStream();
+      const { ext } = path.parse(filename);
+      const randomName = generateRandomString(12) + ext;
+      const pathname = path.join(
+        __dirname,
+        `../../public/images/${randomName}`
+      );
+      await User.update(
+        { username: username },
+        {
+          $set: {
+            imageUrl: `http://localhost:5000/images/${randomName}`,
+          },
+        }
+      );
+      // if (!user) {
+      //   throw new AuthenticationError("Unauthenticated");
+      // }
+      // const profilePic = await File.create({
+      //   fileurl: `http://localhost:5000/images/${randomName}`,
+      //   user: user,
+      // });
+      // user.imageUrl = `http://localhost:5000/images/${randomName}`;
+      // await user.sa;
+      await stream.pipe(fs.createWriteStream(pathname));
+      return `http://localhost:5000/images/${randomName}`;
     },
   },
 };
